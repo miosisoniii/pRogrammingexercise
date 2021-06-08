@@ -8,9 +8,11 @@
 #-------------------------------------------------------------------------------------#
 # Load Dependencies
 #-------------------------------------------------------------------------------------#
-library(dplyr)
-library(reshape2)
-library(shiny)
+require(dplyr)
+require(reshape2)
+require(shiny)
+require(data.table)
+require(ggplot2)
 
-## read all files in the R folder
-lapply(list.files("R"), FUN = function(x) source(paste0("R/", x)))
+## source all files in the R folder
+lapply(list.files("./R"), FUN = function(x) source(paste0("./R/", x)))

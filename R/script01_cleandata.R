@@ -8,8 +8,8 @@
 #-------------------------------------------------------------------------------------#
 # Load Dependencies
 #-------------------------------------------------------------------------------------#
-require(dplyr)
-require(reshape2)
+# require(dplyr)
+# require(reshape2)
 # require(shiny)
 
 #-------------------------------------------------------------------------------------#
@@ -44,7 +44,7 @@ both_dat <- left_join(pt_dat, lab_dat, by = c("USUBJID", "STUDYID"))
 
 ## reshape VISIT into wide format to perform subtraction
 cast_dat <- both_dat %>%
-  dcast(... ~ AVISIT, value.var = "AVAL") %>%
+  reshape2::dcast(... ~ AVISIT, value.var = "AVAL") %>%
   ## create DELTA Column to observe change from baseline
   mutate(PEAK = pmax(SCREENING, `WEEK 1 DAY 8`, `WEEK 2 DAY 15`, 
                      `WEEK 3 DAY 22`, `WEEK 4 DAY 29`,`WEEK 5 DAY 36`),

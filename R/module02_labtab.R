@@ -5,7 +5,6 @@
 # R Version: 4.0.1 "See Things Now"
 #-------------------------------------------------------------------------------------#
 
-
 #-------------------------------------------------------------------------------------#
 # Relevant columns for PLab Data
 ## USUBJID - patient unique identifier
@@ -15,7 +14,6 @@
 ## ACTARM - Descriptor for type of dose received
 ## ACTARMCD - Study Arm
 #-------------------------------------------------------------------------------------#
-
 
 #-------------------------------------------------------------------------------------#
 # Lab Tab UI
@@ -31,9 +29,12 @@ labUI <- function(id) {
       )
     ),
     fluidRow(
-      column(width = 6,
+      column(width = 3,
              selectizeInput(ns("data"), "Select data to view:",
-                            choices = c("Patient Data", "Laboratory Results"))
+                            choices = c("Patient Data" = "pt_dat", 
+                                        "Laboratory Results" = "lab_dat")),
+             
+             
       )
     )
   )
@@ -48,17 +49,17 @@ labServer <- function(id) {
     id = id,
     module = function(input, output, session) {
       
+      # select input
+      # dataSelect <- input$data
+      
+      # reactive for selection of variables for lab
+      
+      # render output datatable for lab
+      # output$lab_output <- renderDataTable({
+      #   head(lab_dat)
+      # })
+      
     }
   )
 }
 
-# labServer <- function(id, prefix = "") {
-#   moduleServer(
-#     id,
-#     function(input, output, session) {
-#       output$result <- renderText({
-#         paste0(prefix, toupper(input$txt))
-#       })
-#     }
-#   )
-# }
