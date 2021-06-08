@@ -60,7 +60,11 @@ patientUI <- function(id) {
       
       mainPanel(
         tabsetPanel(type = "tabs",
-                    tabPanel(ns("patientdat"), title = "Plot Data"),
+                    tabPanel(ns("patientdat"), title = "Plot Data",
+                             
+                             plotlabUI("filtered")
+                             
+                             ),
                     
                     ## plot test here
                     
@@ -87,7 +91,6 @@ patientServer <- function(id) {
     module = function(input, output, session) {
       
       ## render datatable here
-      ## will be filtered later
       output$lab_output <- renderDataTable({
         lab_dat
       })

@@ -21,11 +21,10 @@
 
 plotlabUI <- function(id) {
   ns <- NS(id)
-  
   tagList(
     fluidRow(
       column(width = 8,
-             
+            plotOutput(ns("filtered")) 
              
       )
     )
@@ -41,15 +40,35 @@ plotlabServer <- function(id) {
     id = id,
     module = function(input, output, session) {
       
-      # select input
-      # dataSelect <- input$data
+      ## rename variables for filtering of the plot
+      filtered_dat <- reactive({
+        arm <- input$arm
+        race <- input$race
+        test <- input$test
+        category <- input$category
+        sex <- input$sex
+        age <- input$age
+        
+        ## filter using the reactive inputs
+        melt_dat %>%
+          filter(ACTARM == arm,
+                 RACE == race,
+                 LBTEST == test,
+                 LBCAT == category,
+                 SEX == sex,
+                 AGE == age)
+          
+      })
       
-      # reactive for selection of variables for lab
       
-      # render output datatable for lab
-      # output$lab_output <- renderDataTable({
-      #   head(lab_dat)
-      # })
+      
+      
+      ## send plot output to the UI
+      output$filtered <- renderPlot(
+        ggplot(data = filtered_dat(), 
+               aes(x = VISIT, y = RESULT, color = ACTARM)) + 
+          geom_point()
+      )
       
     }
   )

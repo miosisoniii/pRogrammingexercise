@@ -15,6 +15,8 @@ shinyServer(function(input, output, session) {
   
   patientServer("main")
   
+  plotlabServer("filtered")
+  
 })
 
 

@@ -57,6 +57,17 @@ cast_dat <- both_dat %>%
          PEAK_DELTA = pmax(SCRN_DELTA, WK1_DELTA, WK2_DELTA, WK3_DELTA, WK4_DELTA, WK5_DELTA))
 
 ## write this final output file to csv to be used in the shiny app
-write.csv(cast_dat, "./output/combined_PT_LAB_clean_dat.csv", row.names = FALSE)
+write.csv(cast_dat, "./output/combined_PT_LAB_wideformat.csv", row.names = FALSE)
 
+#-------------------------------------------------------------------------------------#
+# Melt into long format for plotting
+#-------------------------------------------------------------------------------------#
+
+melt_dat <- cast_dat %>% 
+  reshape2::melt(id.vars = c(1:13), 
+                 variable.name = "VISIT", 
+                 value.name = "RESULT" )
+
+## write this to csv
+write.csv(melt_dat, "./output/combined_PT_LAB_longformat.csv", row.names = FALSE)
 
