@@ -1,30 +1,28 @@
 #-------------------------------------------------------------------------------------#
-# Project: Module02: Lab Breakdown Tab
-# Purpose: 
+# Project: Module03: Plot Lab Results
+# Purpose: Plot Lab Results
 # Author: Artemio Sison III
 # R Version: 4.0.1 "See Things Now"
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------------------------------------#
-# Relevant columns for PLab Data
-## USUBJID - patient unique identifier
-## AGE - patient age
-## SEX - patient sex
-## RACE - patient race
-## ACTARM - Descriptor for type of dose received
-## ACTARMCD - Study Arm
+# Lab Plot UI
 #-------------------------------------------------------------------------------------#
 
-#-------------------------------------------------------------------------------------#
-# Lab Tab UI
-#-------------------------------------------------------------------------------------#
-
-plotlabUI <- function(id) {
+labUI <- function(id) {
   ns <- NS(id)
   
   tagList(
     fluidRow(
-      column(width = 8,
+      column(width = 6,
+             textInput(ns("name"), "Enter name here:"),
+      )
+    ),
+    fluidRow(
+      column(width = 3,
+             selectizeInput(ns("data"), "Select data to view:",
+                            choices = c("Patient Data" = "pt_dat", 
+                                        "Laboratory Results" = "lab_dat")),
              
              
       )
@@ -33,10 +31,10 @@ plotlabUI <- function(id) {
 }
 
 #-------------------------------------------------------------------------------------#
-# Lab Tab Server
+# Lab Plot Server
 #-------------------------------------------------------------------------------------#
 
-plotlabServer <- function(id) {
+labServer <- function(id) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
@@ -54,4 +52,3 @@ plotlabServer <- function(id) {
     }
   )
 }
-
