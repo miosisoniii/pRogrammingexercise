@@ -1,27 +1,17 @@
 #-------------------------------------------------------------------------------------#
-# Project: Module01: Patient Breakdown Tab
-# Purpose: Create module for patient data
+# Project: 
+# Purpose: 
 # Author: Artemio Sison III
 # R Version: 4.0.1 "See Things Now"
 #-------------------------------------------------------------------------------------#
 
 
 #-------------------------------------------------------------------------------------#
-# Relevant columns for Patient Data
-## USUBJID - patient unique identifier
-## AGE - patient age
-## SEX - patient sex
-## RACE - patient race
-## ACTARM - Descriptor for type of dose received
-## ACTARMCD - Study Arm
+# 
 #-------------------------------------------------------------------------------------#
 
 
-#-------------------------------------------------------------------------------------#
-# Patient Tab UI
-#-------------------------------------------------------------------------------------#
-
-patientUI <- function(id) {
+plottab_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
@@ -61,19 +51,15 @@ patientUI <- function(id) {
       mainPanel(
         tabsetPanel(type = "tabs",
                     tabPanel(ns("patientdat"), title = "Plot Data",
+                             verbatimTextOutput(ns("testoutput"))
                              
-                             plotlabUI("filtered")
-                             
-                             ),
-                    
-                    ## plot test here
-                    
-                    ## plot  patient demographic composition here
-                    
+                    ),
+
                     ## gonna put the datatable output here
                     tabPanel(ns("datatable"), title = "Data Table",
                              # render data output for lab regardless of selection
-                             dataTableOutput(ns("lab_output"))
+                             # dataTableOutput(ns("testoutput2"))
+                             dataTableOutput("testoutput2")
                     )
         )
       )
@@ -82,19 +68,43 @@ patientUI <- function(id) {
 }
 
 #-------------------------------------------------------------------------------------#
-# Patient Tab Server
+# Server
 #-------------------------------------------------------------------------------------#
 
-patientServer <- function(id) {
+plottab_server <- function(id) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
       
-      ## render datatable here
-      output$lab_output <- renderDataTable({
-        lab_dat
+      ## attempt to call this reactive data from another module
+      ## attempt to return a single input - this works reactively!
+      # testinputselect <- reactive({input$race})
+      testinputselect <- reactive({
+        racetest <- input$race
+        sextest <- input$sex
+
+        ## make inputs into list to be passed out of reactive expression
+        testlist <- list(racetest, sextest)
+        return(testlist)
+        })
+      
+      ### testing reactive display passing from module to module
+      output$testoutput <- renderPrint({
+        testinputselect()
       })
       
+      ## return filtered output
+      datafilt <- reactive({
+        data <- melt_dat %>% 
+          filter(RACE == testinputselect()[[1]],
+                 SEX == testinputselect()[[2]])
+        return(data)
+      })
+      
+      output$testoutput2 <- renderDataTable(
+        datafilt()
+      )
+
     }
   )
 }

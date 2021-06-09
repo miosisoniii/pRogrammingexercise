@@ -5,6 +5,9 @@
 # R Version: 4.0.1 "See Things Now"
 #-------------------------------------------------------------------------------------#
 
+# good resource for module usage
+# https://www.r-bloggers.com/2019/01/the-shiny-module-design-pattern/
+
 #-------------------------------------------------------------------------------------#
 # Load Dependencies
 #-------------------------------------------------------------------------------------#
@@ -15,4 +18,4 @@ require(data.table)
 require(ggplot2)
 
 ## source all files in the R folder
-lapply(list.files("R"), FUN = function(x) source(paste0("R/", x)))
+lapply(list.files("./R", pattern = "*.R"), FUN = function(x) source(paste0("./R/", x)))

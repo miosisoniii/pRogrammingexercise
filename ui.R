@@ -17,7 +17,7 @@ shinyUI(
       #        labUI("main")
       # ),
       column(width = 8,
-             patientUI("main")
+             plottab_ui("main")
       )
     )
   )

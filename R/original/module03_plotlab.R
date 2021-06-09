@@ -39,15 +39,7 @@ labServer <- function(id) {
     id = id,
     module = function(input, output, session) {
       
-      # select input
-      # dataSelect <- input$data
-      
-      # reactive for selection of variables for lab
-      
-      # render output datatable for lab
-      # output$lab_output <- renderDataTable({
-      #   head(lab_dat)
-      # })
+
       
     }
   )
