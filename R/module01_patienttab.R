@@ -62,15 +62,24 @@ patientUI <- function(id) {
         tabsetPanel(type = "tabs",
                     tabPanel(ns("patientdat"), title = "Plot Data",
                              
-                             plotlabUI("filtered")
+                             # testing variable output here - this works!
+                             # this works within the plottab UI
+                             verbatimTextOutput(ns("varselect_output")),
+                             
+                             ## attempt to call UI from another function - this works!
+                             plotlabUI(ns("testoutput2")),
+                             ## attempt 
+                             plotlabUI(ns("testdata"))
+                             ## plot UI from module 02
+                             # plotlabUI(ns("filteredplot"))
+                             
+                             
+                             ## plot test here
+                             
+                             ## plot  patient demographic composition here
                              
                              ),
-                    
-                    ## plot test here
-                    
-                    ## plot  patient demographic composition here
-                    
-                    ## gonna put the datatable output here
+                    ## table output after filtering
                     tabPanel(ns("datatable"), title = "Data Table",
                              # render data output for lab regardless of selection
                              dataTableOutput(ns("lab_output"))
@@ -90,11 +99,45 @@ patientServer <- function(id) {
     id = id,
     module = function(input, output, session) {
       
+      ## make the selected variables from the UI reactive
+      varSelect <- reactive({
+        armfilt <- input$arm
+        racefilt <- input$race
+        testfilt <- input$filt
+        categoryfilt <- input$category
+        sexfilt <- input$sex
+        agefilt <- input$age
+        varlist <- list(armfilt, racefilt, testfilt, categoryfilt, sexfilt, agefilt)
+        # assign names to the variable list in the reactive
+        names(varlist) <- c("arm", "race", "test", "category", "sex", "age")
+        return(varlist)
+      })
+      ## test returned output
+      output$varselect_output <- renderPrint(varSelect())
+      
+      # filter the lab data using the reactive above
+      datafilt <- reactive({
+        data_out <- melt_dat %>%
+          filter(SEX %in% varSelect()$sex,
+                 RACE %in% varSelect()$race
+                 )
+      })
       ## render datatable here
       output$lab_output <- renderDataTable({
-        lab_dat
+        datafilt()
       })
       
+      
+      # testing to see if callmodule will work here - this works!
+      callModule(plotlabServer, "testoutput2")
+      
+      # call test data from other module
+      callModule(plotlabServer, "testdata")
+      
+      # now test passing the data into the other module
+      # callModule(plotlabServer, "plot1")
+      
+
     }
   )
 }

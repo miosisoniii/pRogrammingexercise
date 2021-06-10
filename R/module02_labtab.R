@@ -24,7 +24,9 @@ plotlabUI <- function(id) {
   tagList(
     fluidRow(
       column(width = 8,
-            plotOutput(ns("filtered")) 
+             verbatimTextOutput(ns("testoutput2")),
+             dataTableOutput(ns("testdata")),
+             plotOutput(ns("plot1")) 
              
       )
     )
@@ -35,42 +37,33 @@ plotlabUI <- function(id) {
 # Lab Tab Server
 #-------------------------------------------------------------------------------------#
 
-plotlabServer <- function(id) {
-  moduleServer(
-    id = id,
-    module = function(input, output, session) {
-      
-      ## rename variables for filtering of the plot
-      filtered_dat <- reactive({
-        arm <- input$arm
-        race <- input$race
-        test <- input$test
-        category <- input$category
-        sex <- input$sex
-        age <- input$age
-        
-        ## filter using the reactive inputs
-        melt_dat %>%
-          filter(ACTARM == arm,
-                 RACE == race,
-                 LBTEST == test,
-                 LBCAT == category,
-                 SEX == sex,
-                 AGE == age)
-          
-      })
-      
-      
-      
-      
-      ## send plot output to the UI
-      output$filtered <- renderPlot(
-        ggplot(data = filtered_dat(), 
-               aes(x = VISIT, y = RESULT, color = ACTARM)) + 
-          geom_point()
-      )
-      
-    }
+
+
+plotlabServer <- function(input, output, session) {
+  # testing reactive to see if anything from the tab module is transferrred
+  pulldata <- reactive({
+    data <- patientServer("lab_output")
+    return(data)
+  })
+  # print here
+  
+  
+  ## testing the print and this shit works!
+  # output$testoutput2 <- renderPrint("Testing to see if this text appears")
+  output$testoutput2 <- renderPrint(pulldata()$datafilt())
+  
+  
+
+  # testing datatable view from module01
+  output$testdata <- renderDataTable(
+    pulldata()
+    
   )
+  
+
 }
+
+
+
+
 

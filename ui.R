@@ -18,6 +18,7 @@ shinyUI(
       # ),
       column(width = 8,
              patientUI("main")
+
       )
     )
   )

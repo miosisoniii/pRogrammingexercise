@@ -11,11 +11,9 @@
 
 shinyServer(function(input, output, session) {
   
-  labServer("main")
+  # labServer("main")
   
   patientServer("main")
-  
-  plotlabServer("filtered")
   
 })
 
