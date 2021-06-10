@@ -68,6 +68,7 @@ patientUI <- function(id) {
                              
                              ## attempt to call UI from another function - this works!
                              plotlabUI(ns("testoutput2")),
+                             plotlabUI(ns("testoutput3")),
                              ## attempt 
                              plotlabUI(ns("testdata"))
                              ## plot UI from module 02
@@ -135,13 +136,22 @@ patientServer <- function(id) {
       
       # testing to see if callmodule will work here - this works!
       callModule(plotlabServer, "testoutput2")
+      callModule(plotlabServer, "testoutput3")
+      
+      #---------------------------------------------#
+      # sending output from module as a list
+      #---------------------------------------------#
+      # first attempt, calling the reactive variables 
+      return(testvar = datafilt())
+      # second attempt, calling reactive variables in a list
+      
       
       #-------------------------------------------------------------------------------------#
       #  STOP HERE:  encountering error: data must be two dimensional - data frame or matrix
       #-------------------------------------------------------------------------------------#
 
       # call test data from other module
-      callModule(plotlabServer, "testdata")
+      # callModule(plotlabServer, "testdata")
       
       # now test passing the data into the other module
       # callModule(plotlabServer, "plot1")

@@ -6,16 +6,6 @@
 #-------------------------------------------------------------------------------------#
 
 #-------------------------------------------------------------------------------------#
-# Relevant columns for PLab Data
-## USUBJID - patient unique identifier
-## AGE - patient age
-## SEX - patient sex
-## RACE - patient race
-## ACTARM - Descriptor for type of dose received
-## ACTARMCD - Study Arm
-#-------------------------------------------------------------------------------------#
-
-#-------------------------------------------------------------------------------------#
 # Lab Tab UI
 #-------------------------------------------------------------------------------------#
 
@@ -25,6 +15,7 @@ plotlabUI <- function(id) {
     fluidRow(
       column(width = 8,
              verbatimTextOutput(ns("testoutput2")),
+             verbatimTextOutput(ns("testoutput3")),
              dataTableOutput(ns("testdata")),
              plotOutput(ns("plot1")) 
              
@@ -37,7 +28,8 @@ plotlabUI <- function(id) {
 # Lab Tab Server
 #-------------------------------------------------------------------------------------#
 
-
+## good reference for variety of ways to pass objects between modules
+#https://stackoverflow.com/questions/46555355/passing-data-within-shiny-modules-from-module-1-to-module-2
 
 plotlabServer <- function(input, output, session) {
   # testing reactive to see if anything from the tab module is transferrred
@@ -45,22 +37,22 @@ plotlabServer <- function(input, output, session) {
     data <- patientServer("lab_output")
     return(data)
   })
-  # print here
-  
-  
-  ## testing the print and this shit works!
-  # output$testoutput2 <- renderPrint("Testing to see if this text appears")
-  output$testoutput2 <- renderPrint(pulldata()$datafilt())
-  
-  
+
 
   # testing datatable view from module01
   output$testdata <- renderDataTable(
     pulldata()
-    
+
   )
   
-
+  
+  ## testing the print and this shit works!
+  output$testoutput2 <- renderPrint("Testing to see if this text appears")
+  # output$testoutput2 <- renderPrint(pulldata()$datafilt())
+  
+  ## testing an additional output
+  ## This DOES NOT WORK because this is the second object being passed from this module
+  output$testoutput3 <- renderPrint("This is the second input")
 }
 
 
