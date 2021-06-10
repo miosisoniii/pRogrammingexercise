@@ -38,7 +38,7 @@ patientUI <- function(id) {
                                       choices = unique(cast_dat$RACE),
                                       selected = unique(cast_dat$RACE)
                    ),
-                   checkboxGroupInput(ns("test"), "Laboratory Test: ",
+                   checkboxGroupInput(ns("labtest"), "Laboratory Test: ",
                                       choices = unique(cast_dat$LBTEST),
                                       selected = unique(cast_dat$LBTEST)
                    ),
@@ -103,14 +103,14 @@ patientServer <- function(id) {
       varSelect <- reactive({
         armfilt <- input$arm
         racefilt <- input$race
-        testfilt <- input$filt
+        labtestfilt <- input$labtest
         categoryfilt <- input$category
         sexfilt <- input$sex
         agefilt1 <- input$age[1]
         agefilt2 <- input$age[2]
-        varlist <- list(armfilt, racefilt, testfilt, categoryfilt, sexfilt, agefilt1, agefilt2)
+        varlist <- list(armfilt, racefilt, labtestfilt, categoryfilt, sexfilt, agefilt1, agefilt2)
         # assign names to the variable list in the reactive
-        names(varlist) <- c("arm", "race", "test", "category", "sex", "age1", "age2")
+        names(varlist) <- c("arm", "race", "labtest", "category", "sex", "age1", "age2")
         return(varlist)
       })
       ## test returned output
@@ -121,11 +121,9 @@ patientServer <- function(id) {
         data_out <- melt_dat %>%
           filter(SEX %in% varSelect()$sex,
                  RACE %in% varSelect()$race,
-                 # AGE > varSelect()$age[1], AGE < varSelect()$age[2],
-                 # AGE > varSelect()$age1, AGE < varSelect()$age2,
-                 # AGE %in% seq(varSelect()$age1, varSelect()$age2),
+                 AGE %in% seq(varSelect()$age1, varSelect()$age2),
                  ACTARM %in% varSelect()$arm,
-                 LBTEST %in% varSelect()$test,
+                 LBTEST %in% varSelect()$labtest,
                  LBCAT %in% varSelect()$category
                  )
       })
