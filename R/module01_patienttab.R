@@ -106,10 +106,11 @@ patientServer <- function(id) {
         testfilt <- input$filt
         categoryfilt <- input$category
         sexfilt <- input$sex
-        agefilt <- input$age
-        varlist <- list(armfilt, racefilt, testfilt, categoryfilt, sexfilt, agefilt)
+        agefilt1 <- input$age[1]
+        agefilt2 <- input$age[2]
+        varlist <- list(armfilt, racefilt, testfilt, categoryfilt, sexfilt, agefilt1, agefilt2)
         # assign names to the variable list in the reactive
-        names(varlist) <- c("arm", "race", "test", "category", "sex", "age")
+        names(varlist) <- c("arm", "race", "test", "category", "sex", "age1", "age2")
         return(varlist)
       })
       ## test returned output
@@ -119,7 +120,13 @@ patientServer <- function(id) {
       datafilt <- reactive({
         data_out <- melt_dat %>%
           filter(SEX %in% varSelect()$sex,
-                 RACE %in% varSelect()$race
+                 RACE %in% varSelect()$race,
+                 # AGE > varSelect()$age[1], AGE < varSelect()$age[2],
+                 # AGE > varSelect()$age1, AGE < varSelect()$age2,
+                 # AGE %in% seq(varSelect()$age1, varSelect()$age2),
+                 ACTARM %in% varSelect()$arm,
+                 LBTEST %in% varSelect()$test,
+                 LBCAT %in% varSelect()$category
                  )
       })
       ## render datatable here
@@ -131,6 +138,10 @@ patientServer <- function(id) {
       # testing to see if callmodule will work here - this works!
       callModule(plotlabServer, "testoutput2")
       
+      #-------------------------------------------------------------------------------------#
+      #  STOP HERE:  encountering error: data must be two dimensional - data frame or matrix
+      #-------------------------------------------------------------------------------------#
+
       # call test data from other module
       callModule(plotlabServer, "testdata")
       
