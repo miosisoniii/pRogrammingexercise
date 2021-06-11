@@ -95,8 +95,9 @@ outputmodule_UI <- function(id) {
 
 outputmodule_Server <- function(input, output, session, object) {
   ## test returned output
-  output$varselect_output <- renderPrint(object$inputselection())
-  output$datafilt_output <- renderDataTable(object$datafiltered())
+  # output$varselect_output <- renderPrint(object$inputselection())
+  # output$datafilt_output <- renderDataTable(object$datafiltered())
+  output$datafilt_output <- renderDataTable(object[[2]]())
 }
 
 #-------------------------------------------------------------------------------------#
@@ -128,24 +129,24 @@ plotmodule_Server <- function(input, output, session, object) {
   ### plotting patient data plot
   ## inverted histogram plot reference: https://www.r-graph-gallery.com/density_mirror_ggplot2.html
   output$patientplotoutput <- renderPlot(    # plotting output
-    # ggplot(data = object[[2]](),
-    #        aes(x = AGE, fill = SEX)) +
-    #   geom_histogram(color = "#e9ecef", alpha = 0.6,  position = "dodge") + 
-    #   scale_fill_manual(values = c("#69b3a2", "#404080")) + 
-    #   theme(axis.text.x = element_text(hjust = 1.0)) + 
-    #   ggtitle("Patient Age Distribution")
-    ## inverted histogram code
     ggplot(data = object[[2]](),
-           aes(x = x)) +
-      geom_histogram(aes(x = BMRKR1, y = ..density.., fill = SEX), 
-                     color = "#e9ecef", alpha = 0.6,  position = "dodge") +
-      geom_histogram(aes(x = AGE, y = -..density.., fill = SEX), 
-                     color = "#e9ecef", alpha = 0.6,  position = "dodge") +
+           aes(x = AGE, fill = SEX)) +
+      geom_histogram(color = "#e9ecef", alpha = 0.6,  position = "dodge") +
       scale_fill_manual(values = c("#69b3a2", "#404080")) +
-      geom_label(aes(x = 4.5, y = 0.25, label = "Biomarker Measurement")) + 
-      geom_label(aes(x = 4.5, y = -0.25, label = "Patient Age")) + 
       theme(axis.text.x = element_text(hjust = 1.0)) +
       ggtitle("Patient Age Distribution")
+    ## inverted histogram code
+    # ggplot(data = object[[2]](),
+    #        aes(x = x)) +
+    #   geom_histogram(aes(x = BMRKR1, y = ..density.., fill = SEX), 
+    #                  color = "#e9ecef", alpha = 0.6,  position = "dodge") +
+    #   geom_histogram(aes(x = AGE, y = -..density.., fill = SEX), 
+    #                  color = "#e9ecef", alpha = 0.6,  position = "dodge") +
+    #   scale_fill_manual(values = c("#69b3a2", "#404080")) +
+    #   geom_label(aes(x = 4.5, y = 0.25, label = "Biomarker Measurement")) + 
+    #   geom_label(aes(x = 4.5, y = -0.25, label = "Patient Age")) + 
+    #   theme(axis.text.x = element_text(hjust = 1.0)) +
+    #   ggtitle("Patient Age Distribution")
   )
   
   
