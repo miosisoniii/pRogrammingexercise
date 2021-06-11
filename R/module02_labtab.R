@@ -14,6 +14,10 @@ inputmodule_UI <- function(id) {
   tagList(
     fluidRow(
       column(width = 8,
+             radioButtons(ns("labtest"), "Laboratory Test: ",
+                          choices = unique(cast_dat$LBTEST),
+                          selected = "Alanine Aminotransferase Measurement"
+             ),
              checkboxGroupInput(ns("arm"), "Select Study Arm: ",
                                 choices = unique(cast_dat$ACTARM),
                                 selected = unique(cast_dat$ACTARM)
@@ -21,14 +25,6 @@ inputmodule_UI <- function(id) {
              checkboxGroupInput(ns("race"), "Patient Race: ",
                                 choices = unique(cast_dat$RACE),
                                 selected = unique(cast_dat$RACE)
-             ),
-             # checkboxGroupInput(ns("labtest"), "Laboratory Test: ",
-             #                    choices = unique(cast_dat$LBTEST),
-             #                    selected = unique(cast_dat$LBTEST)
-             # ),
-             radioButtons(ns("labtest"), "Laboratory Test: ",
-                                choices = unique(cast_dat$LBTEST),
-                                selected = "Alanine Aminotransferase Measurement"
              ),
              checkboxGroupInput(ns("category"), "Test Category: ",
                                 choices = unique(cast_dat$LBCAT),
@@ -130,12 +126,25 @@ plotmodule_Server <- function(input, output, session, object) {
     )
   
   ### plotting patient data plot
+  ## inverted histogram plot reference: https://www.r-graph-gallery.com/density_mirror_ggplot2.html
   output$patientplotoutput <- renderPlot(    # plotting output
+    # ggplot(data = object[[2]](),
+    #        aes(x = AGE, fill = SEX)) +
+    #   geom_histogram(color = "#e9ecef", alpha = 0.6,  position = "dodge") + 
+    #   scale_fill_manual(values = c("#69b3a2", "#404080")) + 
+    #   theme(axis.text.x = element_text(hjust = 1.0)) + 
+    #   ggtitle("Patient Age Distribution")
+    ## inverted histogram code
     ggplot(data = object[[2]](),
-           aes(x = AGE, fill = SEX)) +
-      geom_histogram(color = "#e9ecef", alpha = 0.6,  position = "dodge") + 
-      scale_fill_manual(values = c("#69b3a2", "#404080")) + 
-      theme(axis.text.x = element_text(hjust = 1.0)) + 
+           aes(x = x)) +
+      geom_histogram(aes(x = BMRKR1, y = ..density.., fill = SEX), 
+                     color = "#e9ecef", alpha = 0.6,  position = "dodge") +
+      geom_histogram(aes(x = AGE, y = -..density.., fill = SEX), 
+                     color = "#e9ecef", alpha = 0.6,  position = "dodge") +
+      scale_fill_manual(values = c("#69b3a2", "#404080")) +
+      geom_label(aes(x = 4.5, y = 0.25, label = "Biomarker Measurement")) + 
+      geom_label(aes(x = 4.5, y = -0.25, label = "Patient Age")) + 
+      theme(axis.text.x = element_text(hjust = 1.0)) +
       ggtitle("Patient Age Distribution")
   )
   
