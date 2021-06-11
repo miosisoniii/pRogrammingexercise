@@ -149,7 +149,7 @@ plotmodule_UI <- function(id) {
   ns <- NS(id)
   tagList(
     verbatimTextOutput(NS(id, "testtextoutput")),
-    tableOutput(NS(id, "testplotoutput"))
+    dataTableOutput(NS(id, "testplotoutput"))
   )
 }
 
@@ -162,7 +162,7 @@ plotmodule_Server <- function(input, output, session, object) {
   
   # this code format prints out the same exact output as above
   output$testtextoutput <- renderPrint(object[[1]]()) 
-  output$testplotoutput <- renderPrint(object[[2]]())
+  output$testplotoutput <- renderDataTable(object[[2]]())
   
   ### currently, the reactive dataframe is not being passed out of the output module, 
   ### the input vars are not being passed

@@ -38,7 +38,7 @@ patientUI <- function(id) {
         tabsetPanel(type = "tabs",
                     tabPanel(ns("patientdat"), title = "Plot Data",
                              ## plot output
-                             # plotmodule_UI(ns("testtextoutput")),
+                             plotmodule_UI(ns("testtextoutput")),
                              plotmodule_UI(ns("testplotoutput"))
                              ),
                     
