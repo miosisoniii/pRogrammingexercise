@@ -62,6 +62,7 @@ inputmodule_Server <- function(input, output, session) {
     return(varlist)
   })
   
+  ## filtered dataframe
   datafiltered <- reactive({
     data_out <- melt_dat %>%
       filter(SEX %in% input$sex,
@@ -73,52 +74,17 @@ inputmodule_Server <- function(input, output, session) {
     return(data_out)
   })
     
+  # testing the output of calling the same reactive object within this server module
+  # plot_output <- ggplot2(data = datafiltered,
+  #                        aes(x = ACTARM, y = RESULT)) +
+  #   geom_bar()
+  
   ## return reactive inputs as a list
   list(
-    inputselection,
-    # inputselection = reactive({
-    #   armfilt <- input$arm
-    #   racefilt <- input$race
-    #   labtestfilt <- input$labtest
-    #   categoryfilt <- input$category
-    #   sexfilt <- input$sex
-    #   agefilt1 <- input$age[1]
-    #   agefilt2 <- input$age[2]
-    #   varlist <- list(armfilt, racefilt, labtestfilt, categoryfilt, sexfilt, agefilt1, agefilt2)
-    #   # assign names to the variable list in the reactive
-    #   names(varlist) <- c("arm", "race", "labtest", "category", "sex", "age1", "age2")
-    #   return(varlist)
-    # }),
-    datafiltered
-    # datafiltered = reactive({
-    #   data_out <- melt_dat %>%
-    #     filter(SEX %in% input$sex,
-    #            RACE %in% input$race,
-    #            AGE %in% seq(input$age[1], input$age[2]),
-    #            ACTARM %in% input$arm,
-    #            LBTEST %in% input$labtest,
-    #            LBCAT %in% input$category)
-    # })
+    inputselection, # reactive input selection list format
+    datafiltered # reactive dataframe output
+    # plot_output # plot from filtered selection
   )
-  
-  
-  # attempt to return a single object from this server
-  # throws error in "$" object of type 'closure' is not subsettable"
-  # inputselection <- reactive({
-  #   armfilt <- input$arm
-  #   racefilt <- input$race
-  #   labtestfilt <- input$labtest
-  #   categoryfilt <- input$category
-  #   sexfilt <- input$sex
-  #   agefilt1 <- input$age[1]
-  #   agefilt2 <- input$age[2]
-  #   varlist <- list(armfilt, racefilt, labtestfilt, categoryfilt, sexfilt, agefilt1, agefilt2)
-  #   # assign names to the variable list in the reactive
-  #   names(varlist) <- c("arm", "race", "labtest", "category", "sex", "age1", "age2")
-  #   return(varlist)
-  # })
-  
-  # return(inputselection)
 }
 
 #-------------------------------------------------------------------------------------#
@@ -128,10 +94,7 @@ inputmodule_Server <- function(input, output, session) {
 outputmodule_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    # verbatimTextOutput(NS(id, "varselect_output")),
-    
     dataTableOutput(NS(id, "datafilt_output"))
-    
   )
 }
 
@@ -148,26 +111,34 @@ outputmodule_Server <- function(input, output, session, object) {
 plotmodule_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    plotOutput(NS(id, "labplotoutput")),
+    plotOutput(NS(id, "patientplotoutput")),
+    # dataTableOutput(NS(id, "testplotoutput")), # WORKS! testing the output from calling the reactive object within the module above
     verbatimTextOutput(NS(id, "testtextoutput")),
-    dataTableOutput(NS(id, "testplotoutput"))
+    dataTableOutput(NS(id, "testtableoutput"))
   )
 }
 
 plotmodule_Server <- function(input, output, session, object) {
-  ### this doesnt work but DOES print out the input list BUT WITHOUT SELECTIONS
-  # this means the selections arent being made. need to just take the table output from the 
-  # input module server
-  # output$testplotoutput <- renderTable(object$datafiltered())
-  # output$testplotoutput <- renderTable(object$inputselection())
+
+  ## renders the plot output data
+  output$labplotoutput <- renderPlot(    # plotting output
+    ggplot(data = object[[2]](),
+            aes(x = BASELINE, y = RESULT)) +
+      geom_point()
+    )
+  output$patientplotoutput <- renderPlot(    # plotting output
+    ggplot(data = object[[2]](),
+           aes(x = ACTARM, y = RESULT)) +
+      geom_point()
+  )
   
-  # this code format prints out the same exact output as above
-  output$testtextoutput <- renderPrint(object[[1]]()) 
-  output$testplotoutput <- renderDataTable(object[[2]]())
   
-  ### currently, the reactive dataframe is not being passed out of the output module, 
-  ### the input vars are not being passed
-  ### with the new object from the output module, I can display the table and thus the chart
-  # attempt to display table output
+  
+  ## output code that works
+  # output$testplotoutput <- renderDataTable(object[[3]]()) # this works! using a reactive object does indeed print
+  output$testtextoutput <- renderPrint(object[[1]]()) # selection output in text format
+  output$testtableoutput <- renderDataTable(object[[2]]()) # selection filtered datatable output
   
 }
 
