@@ -16,3 +16,4 @@ require(ggplot2)
 
 ## source all files in the R folder
 lapply(list.files("R"), FUN = function(x) source(paste0("R/", x)))
+
