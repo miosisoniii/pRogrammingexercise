@@ -16,9 +16,8 @@ shinyUI(
       # column(width = 6,
       #        labUI("main")
       # ),
-      column(width = 8,
+      column(width = 12,
              patientUI("main")
-
       )
     )
   )
