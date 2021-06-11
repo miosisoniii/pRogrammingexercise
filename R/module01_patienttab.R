@@ -37,12 +37,15 @@ patientUI <- function(id) {
       mainPanel(
         tabsetPanel(type = "tabs",
                     tabPanel(ns("patientdat"), title = "Plot Data",
-                             ## output from OUTPUT module
-                             outputmodule_UI(ns("varselect_output"))
+                             ## plot output
+                             # plotmodule_UI(ns("testtextoutput")),
+                             plotmodule_UI(ns("testplotoutput"))
                              ),
+                    
                     ## table output after filtering
                     tabPanel(ns("datatable"), title = "Data Table",
                              outputmodule_UI(ns("datafilt_output"))
+                             # outputmodule_UI(ns("varselect_output"))
                              
                     )
         )
@@ -60,8 +63,13 @@ patientServer <- function(id) {
     id = id,
     module = function(input, output, session) {
       
+      # calling for input1
       myobject <- callModule(inputmodule_Server, "input1")
       callModule(outputmodule_Server, "varselect_output", myobject)
+      
+      # calling plotting object, calling the same input from the input
+      myobject2 <- callModule(inputmodule_Server, "input1")
+      callModule(plotmodule_Server, "testplotoutput", myobject2)
 
 
     }
