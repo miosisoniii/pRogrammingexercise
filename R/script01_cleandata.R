@@ -54,7 +54,8 @@ cast_dat <- both_dat %>%
          WK3_DELTA = `WEEK 3 DAY 22` - BASELINE,
          WK4_DELTA = `WEEK 4 DAY 29` - BASELINE,
          WK5_DELTA = `WEEK 5 DAY 36` - BASELINE,
-         PEAK_DELTA = pmax(SCRN_DELTA, WK1_DELTA, WK2_DELTA, WK3_DELTA, WK4_DELTA, WK5_DELTA))
+         PEAK_DELTA = pmax(SCRN_DELTA, WK1_DELTA, WK2_DELTA, WK3_DELTA, WK4_DELTA, WK5_DELTA),
+         BMRKR2 = factor(BMRKR2, c("LOW", "MEDIUM", "HIGH")))
 
 ## write this final output file to csv to be used in the shiny app
 write.csv(cast_dat, "./output/combined_PT_LAB_wideformat.csv", row.names = FALSE)
@@ -66,7 +67,13 @@ write.csv(cast_dat, "./output/combined_PT_LAB_wideformat.csv", row.names = FALSE
 melt_dat <- cast_dat %>% 
   reshape2::melt(id.vars = c(1:13), 
                  variable.name = "VISIT", 
-                 value.name = "RESULT" )
+                 value.name = "RESULT" ) %>%
+  mutate(VISIT = recode(VISIT,
+                        `WEEK 1 DAY 8` = "WK1",
+                        `WEEK 2 DAY 15` = "WK2",
+                        `WEEK 3 DAY 22` = "WK3",
+                        `WEEK 4 DAY 29` = "WK4",
+                        `WEEK 5 DAY 36` = "WK5"))
 
 ## write this to csv
 write.csv(melt_dat, "./output/combined_PT_LAB_longformat.csv", row.names = FALSE)
